@@ -36,5 +36,5 @@ class LossFunction(tf.keras.losses.Loss, ABC):
         # tf.print("BCE:", bce)
         # tf.print("L1:", l1)
 
-        total_loss = mse + 0.1 * kl_div + 0.1 * bce + 0.01 * self.lambda_val * l1
+        total_loss = (1 * mse) + (1*kl_div) + (50*bce) + (self.lambda_val * l1)
         return total_loss

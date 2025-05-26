@@ -1,4 +1,5 @@
 from keras import layers, Model
+import tensorflow as tf
 
 
 class Seq2PointNILM(Model):

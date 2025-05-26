@@ -4,25 +4,25 @@ config = {
 
     # Training
     "batch_size": 128,  # Larger for better gradient estimates
-    "epochs": 20,
-    "learning_rate": 1e-4,  # Higher learning rate with warmup
+    "epochs": 10,
+    "learning_rate": 1e-4,  #
     "optimizer": "adam",
     "loss": "bert4nilm_loss",  # "mse" or "huber" seems to make no difference
     "temperature": 0.1,
     "lambda_val": 1.0,  # inside the bert4nilm loss function
     "num_features": 1,  # The aggregated power readings, AC type; hour, minute, second; appliance status, etc
-    "continuation": True,  # If it is the continuation of a previous training. True at the MLM 2nd run, without mask
+    "continuation": False,  # If it is the continuation of a previous training. True at the MLM 2nd run, without mask
 
     # Input
-    "window_size": 600,  # for UK Dale, 10 time steps mean 1 minute
+    "window_size": 600,  # for UK Dale, 10 time-steps mean 1 minute
     "window_stride": 1,
-    "mlm_mask": False,  # MLM masking for BERT
+    "mlm_mask": True,  # MLM masking for BERT
     "mask_token": -100.05,
     "masking_portion": 0.25,
     "add_artificial_activations": False,
     "balance_enabled": False,
     "standardize_aggregated": True,  # z-score, Uses mean and std: x = (x - x_mean) / x_std
-    "standardize_appliance": False,  # z-score, Uses mean and std: y = (y - y_mean) / y_std
+    "standardize_appliance": True,  # z-score, Uses mean and std: y = (y - y_mean) / y_std
 
     # 1D Convolution layer
     "conv_kernel_size": 5,
@@ -31,16 +31,17 @@ config = {
     "conv_activation": "relu",  # preferably ReLU
 
     # Transformer
-    "hidden_size": 128,  # Reduced to allow for more layers within same compute
+    "hidden_size": 64,  # Reduced to allow for more layers within same compute
     "num_heads": 1,  # More heads to capture different pattern aspects
     "num_layers": 1,  # Also for seq2seq LSTMs
-    "ff_dim": 128,  # 4x hidden_size is the recommended
-    "dropout": 0.1,  # Applies also to the seq2seq LSTM
+    "ff_dim": 64,  # 4x hidden_size is the recommended
+    "dropout": 0.5,  # Applies also to the seq2seq LSTM
     "layer_norm_epsilon": 1e-6,  # Original value is 1e-6
     "dense_activation": "gelu",
 
     # Kernel regularization
     "kernel_regularizer": None,  # For all architectures
+    # "kernel_regularizer": "l1_l2",  # For all architectures
 
     # Deconvolution layer
     "deconv_kernel_size": 4,

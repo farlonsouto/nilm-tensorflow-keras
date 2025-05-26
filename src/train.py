@@ -80,16 +80,16 @@ print("Fetching data from the dataset located at ", path_to_dataset)
 dataset = DataSet(path_to_dataset)
 dataset.set_window(start="09-11-2011", end="25-03-2017")
 # time series handler for the UK Dale dataset
-training_buildings = [1, 3, 4]
+training_buildings = [1, 3, 4, 5]
 training_data = TimeSeries(dataset, training_buildings, [5], wandb_config)
 
 # Building 1
 #   Training: 09/11/2011 to 25/03/2017
 # Validation: 26/03/2017 to 26/04/2017
 validation_dataset = DataSet(path_to_dataset)
-# validation_dataset.set_window(start="26-03-2017", end="26-04-2017")
+validation_dataset.set_window(start="15-06-2015", end="15-11-2015")
 # time series handler for the UK Dale dataset
-validation_data = TimeSeries(dataset, [5], [5], wandb_config)
+validation_data = TimeSeries(validation_dataset, [1], [1], wandb_config)
 
 m_batch = None
 train_gen = training_data.getTrainingDataGenerator()
@@ -113,8 +113,8 @@ print("... The training data is available. Starting training ...")
 
 my_callbacks = [
     # WandbMetricsLogger(log_freq='batch'),
-    EarlyStopping(patience=15, monitor='val_MAE', restore_best_weights=True),
-    ModelCheckpoint(model_path, save_best_only=True, monitor='val_MAE', save_format="tf")
+    EarlyStopping(patience=15, monitor='MAE', restore_best_weights=True),
+    ModelCheckpoint(model_path, save_best_only=True, monitor='MAE', save_format="tf")
 ]
 
 # Train the model and track the training process using WandB

@@ -53,14 +53,21 @@ print("Model loaded successfully!")
 
 # Load the dataset
 dataset = DataSet('../datasets/ukdale.h5')
+# dataset.set_window(start="10-02-2013", end="10-10-2013")
 # time series handler for the UK Dale dataset
-test_data = TimeSeries(dataset, [2], [2], wandb_config)
+test_data = TimeSeries(dataset, [5], [5], wandb_config)
 
 test_gen = test_data.getTestDataGenerator()
 
-# plotter = HarryPlotter(nn_model, test_gen)
-# plotter.run()
+# To use the plotter
+model_type = "seq2p"
+if model_name is not "seq2p":
+    model_type = "seq2seq"
 
+plotter = HarryPlotter(nn_model, test_gen, model_type)
+plotter.run()
+
+# To run the model evaluation straightforwardly (no plotting)
 nn_model.evaluate(test_gen)
 
 # Finish the WandB run

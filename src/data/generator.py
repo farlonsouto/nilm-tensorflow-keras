@@ -223,14 +223,13 @@ class TimeSeriesDataGenerator(Sequence):
         Arguments:
             index: position of the batch in the Sequence.
         Returns:
-            A tuple of ((batch x,batch mask), batch y)
+            A tuple of (batch x,batch y, batch mask)
         """
         batch_x, batch_y, batch_m = [], [], []
         batch_fill_up = 0
         while True:
             try:
                 x, y, m = next(self.data_generator)
-
                 # Adjust for Seq2Point
                 if self.wandb_config.model == 'seq2p':
                     midpoint = len(y) // 2
