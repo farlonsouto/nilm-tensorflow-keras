@@ -1,0 +1,53 @@
+#!/bin/bash
+#SBATCH --partition=GPUQ
+#SBATCH --account=share-ie-idi
+#SBATCH --time=72:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --gres=gpu:1
+#SBATCH --mem=64G
+#SBATCH --job-name="Default Job Name"
+#SBATCH --output=default.out
+#SBATCH --mail-user=farlond@stud.ntnu.no
+#SBATCH --mail-type=ALL
+
+# Parameters (can be passed via sbatch --export)
+ARCH=${ARCH:-"seq2p"}                  # 'seq2seq', 'seq2p', 'bert'
+PURPOSE=${PURPOSE:-"test"}             # 'train' or 'test'
+APPLIANCE=${APPLIANCE:-"kettle"}    # appliance name (e.g., 'dishwasher', 'fridge')
+
+cd "${SLURM_SUBMIT_DIR}"
+
+echo "Running from the directory: $SLURM_SUBMIT_DIR"
+echo "                  job name: $SLURM_JOB_NAME"
+echo "                    Job ID: $SLURM_JOB_ID"
+echo "                Used nodes: $SLURM_JOB_NODELIST"
+echo "           Number of nodes: $SLURM_JOB_NUM_NODES"
+echo "       Number of CPU cores: $SLURM_CPUS_ON_NODE"
+echo "        CPU cores per node: $SLURM_CPUS_ON_NODE"
+echo "          Total used cores: $SLURM_NTASKS"
+echo "               Purpose: $PURPOSE"
+echo "           Architecture: $ARCH"
+echo "              Appliance: $APPLIANCE"
+
+module load Anaconda3/2023.09-0
+module load cuDNN/8.5.0.96-CUDA-11.7.0
+conda activate nnenv
+
+wandb enabled
+wandb online
+
+# Select script based on purpose
+if [ "$PURPOSE" == "train" ]; then
+    SCRIPT="train.py"
+elif [ "$PURPOSE" == "test" ]; then
+    SCRIPT="test.py"
+else
+    echo "Invalid PURPOSE: $PURPOSE. Must be 'train' or 'test'."
+    exit 1
+fi
+
+# Run the Python script with architecture and appliance as arguments
+python ../src/"$SCRIPT" "$ARCH" "$APPLIANCE"
+
+uname -a
