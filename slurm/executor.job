@@ -43,15 +43,17 @@ wandb online
 # Select script based on purpose
 if [ "$PURPOSE" == "train" ]; then
     SCRIPT="train.py"
+  # python train.py <model> <appliance> <kernel_regularizer> <is_continuation> <masked>"
+  # Run the Python script with architecture and appliance as arguments
+  python ../src/"$SCRIPT" "$ARCH" "$APPLIANCE" "$REGULARIZER" "$IS_CONTINUATION" "$MASKED"
 elif [ "$PURPOSE" == "test" ]; then
     SCRIPT="test.py"
+    # python test.py <model> <appliance> <kernel_regularizer>
+#   Run the Python script with architecture and appliance as arguments
+  python ../src/"$SCRIPT" "$ARCH" "$APPLIANCE" "$REGULARIZER"
 else
     echo "Invalid PURPOSE: $PURPOSE. Must be 'train' or 'test'."
     exit 1
 fi
-
-# python train.py <model> <appliance> <kernel_regularizer> <is_continuation> <masked>")
-# Run the Python script with architecture and appliance as arguments
-python ../src/"$SCRIPT" "$ARCH" "$APPLIANCE" "$REGULARIZER" "$IS_CONTINUATION" "$MASKED"
 
 uname -a
