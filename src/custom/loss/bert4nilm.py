@@ -9,6 +9,7 @@ class LossFunction(tf.keras.losses.Loss, ABC):
         self.temperature = float(config.temperature)
         self.on_threshold = int(config.on_threshold)
         self.lambda_val = float(config.lambda_val)
+        self.coefficient = list(config.loss_fn_coef)
 
     def __call__(self, y_true, y_pred, sample_weight=None):
         eps = 1e-7
@@ -36,5 +37,6 @@ class LossFunction(tf.keras.losses.Loss, ABC):
         # tf.print("BCE:", bce)
         # tf.print("L1:", l1)
 
-        total_loss = mse + 0.1 * kl_div + 0.1 * bce + 0.01 * self.lambda_val * l1
+        total_loss = (self.coefficient[0] * mse) + (self.coefficient[1] * kl_div) + (self.coefficient[2] * bce) + (
+                self.coefficient[3] * self.lambda_val * l1)
         return total_loss
