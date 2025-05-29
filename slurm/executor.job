@@ -14,7 +14,10 @@
 # Parameters (can be passed via sbatch --export)
 ARCH=${ARCH:-"seq2p"}                  # 'seq2seq', 'seq2p', 'bert'
 PURPOSE=${PURPOSE:-"test"}             # 'train' or 'test'
-APPLIANCE=${APPLIANCE:-"kettle"}    # appliance name (e.g., 'dishwasher', 'fridge')
+APPLIANCE=${APPLIANCE:-"kettle"}    # appliance name (e.g., 'dish washer', 'fridge')
+REGULARIZER=${REGULARIZER:-"l1l2"}     # 'l1l2', 'l1', 'l2'
+IS_CONTINUATION=${IS_CONTINUATION:-"first"} # 'first' or 'continue'
+MASKED=${MASKED:-"unmasked"}              # 'masked' or 'unmasked'
 
 cd "${SLURM_SUBMIT_DIR}"
 
@@ -47,7 +50,8 @@ else
     exit 1
 fi
 
+# python train.py <model> <appliance> <kernel_regularizer> <is_continuation> <masked>")
 # Run the Python script with architecture and appliance as arguments
-python ../src/"$SCRIPT" "$ARCH" "$APPLIANCE"
+python ../src/"$SCRIPT" "$ARCH" "$APPLIANCE" "$REGULARIZER" "$IS_CONTINUATION" "$MASKED"
 
 uname -a
