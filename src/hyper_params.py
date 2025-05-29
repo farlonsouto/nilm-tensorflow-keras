@@ -53,10 +53,28 @@ config = {
 }
 
 
-def for_model_appliance(model_name, appliance_name) -> dict:
-    # Initialize the configuration dictionary
+def customize(model_name, appliance_name, kernel_regularizer, is_continuation, masked) -> dict:
+    # customize the configuration dictionary
     config["appliance_name"] = appliance_name
     config["model"] = model_name
+
+    if model_name == "bert" or model_name == "seq2seq":
+        config["window_size"] = 600
+    else:  # seq2p
+        config["window_size"] = 299
+
+    if model_name == "bert":
+        config["standardize_appliance"] = False
+    else:
+        config["standardize_appliance"] = True
+
+    if kernel_regularizer == 'l1l2':
+        config["kernel_regularizer"] = 'l1_l2'
+    else:
+        config["kernel_regularizer"] = None
+
+    config["continuation"] = is_continuation
+    config["mlm_mask"] = masked
 
     # Set the appliance-specific configuration
     if appliance_name == "kettle":
@@ -66,6 +84,7 @@ def for_model_appliance(model_name, appliance_name) -> dict:
             "on_threshold": 2000.00,
             "min_on_duration": 12,
             "min_off_duration": 0,
+            "loss_fn_coef": [1, 1, 50, 1],
         })
     elif appliance_name == "fridge":
         config.update({
@@ -74,6 +93,7 @@ def for_model_appliance(model_name, appliance_name) -> dict:
             "on_threshold": 50.00,
             "min_on_duration": 60,
             "min_off_duration": 12,
+            "loss_fn_coef": [1, 1, 0, 1],
         })
     elif appliance_name == "microwave":
         config.update({
@@ -82,6 +102,7 @@ def for_model_appliance(model_name, appliance_name) -> dict:
             "on_threshold": 200.00,
             "min_on_duration": 12,
             "min_off_duration": 30,
+            "loss_fn_coef": [1, 5, 10, 1],
         })
     elif appliance_name == "dish washer":
         config.update({
@@ -90,6 +111,7 @@ def for_model_appliance(model_name, appliance_name) -> dict:
             "on_threshold": 10.00,
             "min_on_duration": 1800,
             "min_off_duration": 1800,
+            "loss_fn_coef": [3, 7, 13, 1],
         })
     else:
         raise ValueError(f"Unknown appliance: {appliance_name}")

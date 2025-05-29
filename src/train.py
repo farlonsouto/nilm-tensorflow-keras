@@ -11,18 +11,19 @@ from custom.loss.seq2seq_loss import Seq2SeqLoss
 from custom.metric.regression import MeanRelativeError
 from data.timeseries import TimeSeries
 from gpu.gpu_memory_allocation import set_gpu_memory_growth
-from hyper_params import for_model_appliance
+from hyper_params import customize
 from model.factory import ModelFactory
 from name_handler import build_model_path
 
 # Set GPU memory growth
 set_gpu_memory_growth()
 
-(model_name, appliance) = get_args()
+#  model, appliance, kernel_regularizer, is_continuation, masked
+(model_name, appliance, kernel_regularizer, is_continuation, masked) = get_args()
 
 wandb.init(
     project="nilm_multiple_models",
-    config=for_model_appliance(model_name, appliance)
+    config=customize(model_name, appliance, kernel_regularizer, is_continuation, masked)
 )
 
 # Retrieve the configuration from WandB
